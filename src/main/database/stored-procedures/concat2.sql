@@ -1,0 +1,15 @@
+DELIMITER $$
+
+CREATE DEFINER='ui4sql'@'%' FUNCTION `concat2`(str1 VARCHAR(256), str2 VARCHAR(256)) RETURNS varchar(1024) CHARSET latin1
+BEGIN
+
+  DECLARE answer VARCHAR(1024);
+
+  SET answer = 'fix the concat3 ';
+  
+  RETURN answer;
+  
+
+END
+$$
+
