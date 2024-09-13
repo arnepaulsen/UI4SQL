@@ -1,0 +1,41 @@
+version: '3.6'
+services:
+  ui4sql_mariadb:
+    image: docker.io/arnepaulsen/ui4sql-db:3.0.8
+    container_name: ui4sql_db
+    ports:
+    - 3306:3306
+    environment:
+      - MYSQL_DATABASE=ui4sql
+      - MYSQL_USER=ui4sql
+      - MYSQL_PASSWORD=easy4me!!
+      - MYSQL_ROOT_PASSWORD=easy4me!!
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+  tomcat_ui4sql:
+    image: 'docker.io/arnepaulsen/ui4sql:3.0.6'
+    container_name: ui4sql
+    ports:
+      - "8080:8080"
+        #  .. should not be needed as Traefik resolves SSL on 443 and sends unencrypted to Tomcat on 8080
+      - "8443:8443"
+    environment:
+      db_user: "ui4sql"
+      db_pwd: "easy4me!!"
+      db_url: "jdbc:mariadb://ui4sql_mariadb:3306/ui4sql"
+      templates_url: "http://ui4sql.net:8080/ui4sql/templates/"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tomcat_ui4sql.entrypoints=websecure"
+      - "traefik.http.routers.tomcat_ui4sql.rule=Host(`ui4sql.net`)"
+      - "traefik.http.routers.tomcat_ui4sql.tls=true"
+      - "traefik.http.routers.tomcat_ui4sql.tls.certresolver=production"
+      - "traefik.http.services.tomcat_ui4sql.loadbalancer.server.port=8080"
+    networks:
+      - traefik
+networks:
+  traefik:
+    external: false
+    name: traefik_default

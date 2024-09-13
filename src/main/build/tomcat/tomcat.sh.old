@@ -1,0 +1,20 @@
+docker run -it -d --name tomcat -p 8080:8080 -p 8443:8443 tomcat:9.0.58
+sleep 5s
+docker cp server.xml tomcat:/usr/local/tomcat/conf/server.xml
+sleep 3s
+docker cp tomcat-users.xml tomcat:/usr/local/tomcat/conf/tomcat-users.xml
+sleep 3s
+docker cp /etc/letsencrypt/archive/ui4sql.net/cert1.pem tomcat:/usr/local/tomcat/conf/cert.pem
+sleep 2s
+docker cp /etc/letsencrypt/archive/ui4sql.net/chain1.pem tomcat:/usr/local/tomcat/conf/chain.pem
+sleep 2s
+docker cp /etc/letsencrypt/archive/ui4sql.net/fullchain1.pem tomcat:/usr/local/tomcat/conf/fullchain.pem
+sleep 2s
+docker cp /etc/letsencrypt/archive/ui4sql.net/privkey1.pem tomcat:/usr/local/tomcat/conf/privkey.pem
+sleep 2s
+docker cp context.xml tomcat:/usr/local/tomcat/webapps.dist/host-manager/META-INF/context.xml
+sleep 2s
+docker cp context.xml tomcat:/usr/local/tomcat/webapps.dist/manager/META-INF/context.xml
+
+
+

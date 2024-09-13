@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+docker compose down
+docker compose up -d
+clear
+docker ps
