@@ -1,0 +1,30 @@
+version: "3.6"
+
+volumes:
+  traefik-ssl-certs:
+    driver: local
+
+services:
+  traefik_https:
+    image: traefik:v2.11
+    container_name: traefik
+    ports:
+      - 80:80
+      - 443:443
+      # this works to expose dashboard.. but doesnt prompt for login 
+      - 9090:8080  # (optional) expose the dashboard !don't use in production!
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik_https.rule=Host(`kellyswordsonapage.com`)"
+      - "traefik.http.routers.traefik_https.entrypoints=dashboard"
+      - "traefik.http.routers.traefik_https.tls=false"
+      - "traefik.http.routers.traefik_https.certresolver=production"
+      - "traefik.http.routers.traefik_https.service=api@internal"
+      - "traefik.http.routers.traefik_https.middlewares=basic-global-auth"
+      - "traefik.http.middlewares.basic-auth-global.basicauth.users=admin:$$apr1$$ZacJ9A51$$.zvHzccPD5i13qtriigpy1"
+      - "traefik.http.services.traefik_https.loadbalancer.server.port=8080"   
+    volumes:
+      - "/etc/traefik:/etc/traefik"
+      - "traefik-ssl-certs:/ssl-certs"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
